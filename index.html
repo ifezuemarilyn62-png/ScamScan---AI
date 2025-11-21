@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ScamScan AI</title>
+    <style>
+        body { font-family: Arial; margin: 50px; }
+        textarea { width: 100%; height: 150px; }
+        button { padding: 10px 20px; margin-top: 10px; }
+        #result { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>ScamScan AI</h1>
+    <p>Paste a scholarship/job offer to check if it is safe:</p>
+    <textarea id="inputText"></textarea><br>
+    <button onclick="analyzeText()">Scan for Scam</button>
+
+    <div id="result"></div>
+
+    <script>
+        function analyzeText() {
+            const text = document.getElementById("inputText").value;
+            let score = 0;
+            let reasons = [];
+            const keywords = ["urgent","limited slots","apply now","free money","bank account","payment","click here","winner","guaranteed","100%"];
+            
+            keywords.forEach(word => {
+                if(text.toLowerCase().includes(word)){
+                    score += 10;
+                    reasons.push("Contains suspicious keyword: " + word);
+                }
+            });
+
+            if(text.toLowerCase().includes("@gmail.com") || text.toLowerCase().includes("@yahoo.com")){
+                score += 5;
+                reasons.push("Uses personal email instead of official domain");
+            }
+
+            if(score > 100) score = 100;
+
+            let verdict = "Safe";
+            if(score >= 50) verdict = "Likely Scam";
+            else if(score >= 20) verdict = "Suspicious";
+
+            document.getElementById("result").innerHTML = `
+                <h2>Result:</h2>
+                <p><strong>Verdict:</strong> ${verdict}</p>
+                <p><strong>Scam Score:</strong> ${score}</p>
+                <p><strong>Reasons:</strong> ${reasons.join(", ")}</p>
+            `;
+        }
+    </script>
+</body>
+</html>
